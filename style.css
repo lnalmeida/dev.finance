@@ -3,6 +3,9 @@
 
 :root {
     --dark-blue: #363f5f;
+    --green:#49aa26;
+    --light-green: #3dd705;
+    --red: #e92929;
 }
 
 * {
@@ -28,6 +31,10 @@
     border-width: 0;
 }
 
+html {
+    font-size: 93.75%; /* 15px*/
+}
+
 body {
     background: #f0f2f5;
     font-family: 'Poppins', sans-serif;
@@ -46,12 +53,31 @@ h2 {
 /*==========Links & Buttons============*/
 
 a{
-    color: #49aa26;
+    color: var(--green);
     text-decoration: none;
 }
 
 a:hover {
-    color: #3dd705;
+    color: var(--light-green);
+}
+
+button {
+    width:100%;
+    height:50px;
+
+    border: none;
+    border-radius: 0.25rem;
+    
+    color: #ffffff;
+    background: var(--green);
+
+    padding: 0;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--light-green);
 }
 
 .button.new {
@@ -59,6 +85,23 @@ a:hover {
     margin-bottom: .8rem;
 }
 
+.button.cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--red);
+    border: 2px var(--red) solid;
+    border-radius:0.25rem;
+
+    height: 50px;
+
+    opacity: 0.6;
+}
+
+.button.cancel:hover {
+    opacity: 1;
+}
 
 /*========== Header ==========*/
 
@@ -71,6 +114,7 @@ header {
 #logo {
     color: #ffffff;
     font-weight: 100;
+    margin-bottom: 3rem;
 }
 
 /*========== Balance ==========*/
@@ -82,6 +126,12 @@ header {
 #balance h2 {
     color: #ffffff;
     margin-top: 0;
+}
+
+#transaction {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
 }
 
 /*========== Cards ==========*/
@@ -111,8 +161,16 @@ header {
     margin-top: 1rem;
 }
 
+.card p.income {
+    color: var(--light-green);
+}
+
+.card p.expense {
+    color: var(--red);
+}
+
 .card.total {
-    background: #49aa26;
+    background: var(--green);
     color: #ffffff;
 }
 
@@ -123,7 +181,7 @@ header {
     width: 100%;
     border-spacing: 0 0.5rem;
 
-        color: #969cb3;
+    color: #969cb3;
 }
 
 table thead th {
@@ -173,6 +231,83 @@ table tbody tr td:last-child {
     border-radius: 0 0.25rem 0.25rem 0;
 }
 
+/*========== Modal ==========*/
+
+.modal-overlay {
+    display: none;
+    align-items: center;
+    justify-content:center;
+
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0, 0.7);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    opacity: 0;
+    visibility: hidden;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: #f0f2f5;
+    padding: 2.4rem;
+    position: relative;
+
+    border-radius: 5px;
+    box-shadow: 1px solid rgba(0,0,0,0.3);
+}
+
+.active {
+    display: flex;
+}
+
+/*========== Form ==========*/
+
+#form {
+    max-width: 500px;
+}
+
+#form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+input {
+    border: none;
+    border-radius: 0.3rem;
+
+    padding: 0.8rem;
+    width: 100%;
+}
+
+.input-group {
+    margin-top: 0.8rem;
+}
+
+.input-group small {
+    opacity: 0.4;
+}
+
+.input-group.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-group.actions .button,
+.input-group.actions button {
+    width:48%;
+}
+
+
+
 /*========== Footer ==========*/
 
 footer {
@@ -181,4 +316,19 @@ footer {
 
     color: var(--dark-blue);
     opacity: 0.6;
+}
+
+/*========== Responsive ==========*/
+
+@media(min-width: 800px) {
+    html {
+        font-size: 87.5%; /*14 px */
+    }
+
+    #balance {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 2rem;
+    }
+
 }

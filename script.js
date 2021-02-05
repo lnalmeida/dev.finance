@@ -40,8 +40,8 @@ const transactions = [
 
     {
         id: 4,
-        description: 'Internet',
-        amount: -20000,
+        description: 'Criação App',
+        amount: 20000,
         date: '05/01/2021',
     }
 ]
@@ -49,18 +49,45 @@ const transactions = [
 const Transaction = {
 
     incomes() {
-        //Soma as entradas
-        let totalIncomes = 0
-        totalIncomes = transaction.amount > 0 ? transactions.reduce(totalIncomes, transaction.amount) : 0
-        return totalIncomes
+        let incomes = 0
+        //pegar todas as transações
+        transactions.forEach(transaction => {
+            //para cada transação maior que 0, 
+            if(transaction.amount > 0) {
+                //somar essa transação a uma variável
+                incomes += transaction.amount
+            }
+            
+        })
+       //retornar a variável
+       return incomes
     },
 
     expenses() {
         //Somar as saídas
+        let expenses = 0
+        //pegar todas as transações
+        transactions.forEach(transaction => {
+            //para cada transação maior que 0, 
+            if(transaction.amount < 0) {
+                //somar essa transação a uma variável
+                expenses += (transaction.amount * (-1))
+            }
+            
+        })
+        return expenses
     },
 
     total() {
         //Subtrai as saidas das entradas
+        //pegar o total de Entradas
+        let totalIncomes = this.incomes()
+        //pegar o total de saidas
+        let totalExpenses = this.expenses()
+        //subtrair saidas de Entradas
+        let total = (totalIncomes-totalExpenses)
+        //retornar variável 
+        return total
     }
 }
 
@@ -106,6 +133,16 @@ const DOM =  {
                 </td>
         `
     return html
+    },
+
+    updateBalance() {
+        const incomeDisplay = document.getElementById('incomeDisplay')
+        const expenseDisplay = document.getElementById('expenseDisplay')
+        const totalDisplay = document.getElementById('totalDisplay')
+
+        incomeDisplay.innerHTML = Utils.formatCurrency(Transaction.incomes())
+        expenseDisplay.innerHTML = Utils.formatCurrency(Transaction.expenses())
+        totalDisplay.innerHTML = Utils.formatCurrency(Transaction.total())
     }
 
 }
@@ -113,6 +150,8 @@ const DOM =  {
 transactions.forEach(transaction => {
     DOM.addTransaction(transaction)
 })
+
+DOM.updateBalance()
 
 console.log(Transaction.incomes())
     

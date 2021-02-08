@@ -41,17 +41,26 @@ const transactions = [
     {
         id: 4,
         description: 'Criação App',
-        amount: 20000,
+        amount: -20000,
         date: '05/01/2021',
-    }
+    },
+
 ]
 
 const Transaction = {
 
+    all: transactions,
+
+    add(transaction){
+        this.all.push(transaction)
+
+        App.reload()
+    },
+
     incomes() {
         let incomes = 0
         //pegar todas as transações
-        transactions.forEach(transaction => {
+        this.all.forEach(transaction => {
             //para cada transação maior que 0, 
             if(transaction.amount > 0) {
                 //somar essa transação a uma variável
@@ -67,11 +76,11 @@ const Transaction = {
         //Somar as saídas
         let expenses = 0
         //pegar todas as transações
-        transactions.forEach(transaction => {
+        this.all.forEach(transaction => {
             //para cada transação maior que 0, 
             if(transaction.amount < 0) {
                 //somar essa transação a uma variável
-                expenses += (transaction.amount * (-1))
+                expenses += transaction.amount
             }
             
         })
@@ -85,7 +94,7 @@ const Transaction = {
         //pegar o total de saidas
         let totalExpenses = this.expenses()
         //subtrair saidas de Entradas
-        let total = (totalIncomes-totalExpenses)
+        let total = (totalIncomes + totalExpenses)
         //retornar variável 
         return total
     }
@@ -102,6 +111,21 @@ const Utils = {
         })
 
         return signal +' '+ value
+    }
+}
+
+const App = {
+    init() {
+        Transaction.all.forEach(transaction => {
+            DOM.addTransaction(transaction)
+        })
+
+        DOM.updateBalance()
+    },
+
+    reload() {
+        DOM.clearTransactions()
+        App.init()
     }
 }
 
@@ -135,23 +159,64 @@ const DOM =  {
     return html
     },
 
+    colorBalance() {
+        
+        let cssClass = ''
+            
+        if (Transaction.total() > 0 ) {
+               document.querySelector('.card.total').classList.remove('negative')
+               cssClass = 'positive' 
+            }  
+            else {
+                document.querySelector('.card.total').classList.remove('positive')
+                cssClass = 'negative'
+            }
+
+            document.querySelector('.card.total').classList.add(cssClass)
+                
+    },
+
     updateBalance() {
+
+        this.colorBalance()
+        
         const incomeDisplay = document.getElementById('incomeDisplay')
         const expenseDisplay = document.getElementById('expenseDisplay')
         const totalDisplay = document.getElementById('totalDisplay')
-
+        
         incomeDisplay.innerHTML = Utils.formatCurrency(Transaction.incomes())
         expenseDisplay.innerHTML = Utils.formatCurrency(Transaction.expenses())
         totalDisplay.innerHTML = Utils.formatCurrency(Transaction.total())
+
+        
+    },
+
+    clearTransactions() {
+        DOM.transactionsContainer.innerHTML = ""
     }
 
 }
 
-transactions.forEach(transaction => {
-    DOM.addTransaction(transaction)
-})
+App.init()
 
-DOM.updateBalance()
+Transaction.add(
+     {
+         id: 5,
+         description: 'Equipamentos',
+         amount: -700000,
+         date: '05/01/2021',
+     }
+)
 
-console.log(Transaction.incomes())
+Transaction.add(
+    {
+         id: 6,
+         description: 'Consultoria',
+         amount: 400000,
+         date: '07/01/2021',
+     }
+)
+
+App.reload()
+
     

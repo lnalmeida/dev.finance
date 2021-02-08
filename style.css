@@ -145,6 +145,24 @@ header {
     color: var(--dark-blue);
 }
 
+.card.total.positive {
+    background: var(--green);
+    padding: 1.5rem 2rem;
+    border-radius: 0.25rem;
+
+    margin-bottom: 2rem;
+    color: #ffffff;
+}
+
+.card.total.negative {
+    background: var(--red);
+    padding: 1.5rem 2rem;
+    border-radius: 0.25rem;
+
+    margin-bottom: 2rem;
+    color: #ffffff;
+}
+
 .card h3 {
     display: flex;
     align-items:center;
@@ -169,10 +187,10 @@ header {
     color: var(--red);
 }
 
-.card.total {
+/* .card.total {
     background: var(--green);
     color: #ffffff;
-}
+} */
 
 
 /*========== Table ==========*/

@@ -16,43 +16,47 @@ const Modal = {
     }
 }
 
-const transactions = [
-    {
-        id: 1,
-        description: 'Luz',
-        amount: -30000,
-        date: '05/01/2021',
-    },
-
-    {
-        id: 2,
-        description: 'Desenvolvimento de Site',
-        amount: 500000,
-        date: '05/01/2021',
-    },
-
-    {
-        id: 3,
-        description: 'Aluguel',
-        amount: -110000,
-        date: '05/01/2021',
-    },
-
-    {
-        id: 4,
-        description: 'Criação App',
-        amount: -20000,
-        date: '05/01/2021',
-    },
-
-]
-
 const Transaction = {
 
-    all: transactions,
+    all: [
+        {
+            id: 1,
+            description: 'Luz',
+            amount: -30000,
+            date: '05/01/2021',
+        },
+    
+        {
+            id: 2,
+            description: 'Desenvolvimento de Site',
+            amount: 500000,
+            date: '05/01/2021',
+        },
+    
+        {
+            id: 3,
+            description: 'Aluguel',
+            amount: -110000,
+            date: '05/01/2021',
+        },
+    
+        {
+            id: 4,
+            description: 'Criação App',
+            amount: -20000,
+            date: '05/01/2021',
+        },
+    
+    ],
 
     add(transaction){
         this.all.push(transaction)
+
+        App.reload()
+    },
+
+    remove(index){
+        this.all.splice(index, 1)
 
         App.reload()
     },
@@ -101,6 +105,18 @@ const Transaction = {
 }
 
 const Utils = {
+    formatAmount(value) {
+        value = Number(value) * 100
+        
+        return value
+    },
+
+    formatDate(date) {
+        date = date.split('-').reverse().join('-').replace(/-/g, '/')
+
+        return date
+    },
+
     formatCurrency(value) {
         const signal = Number(value) < 0 ? '-' : '+'
         value = String(value).replace(/\D/g, "")
@@ -114,10 +130,85 @@ const Utils = {
     }
 }
 
+const Form = {
+ 
+ formDescription : document.querySelector('input#description'),
+ formAmount : document.querySelector('input#amount'),
+ formDate : document.querySelector('input#date'),
+ 
+ getValues() {
+
+        return {
+                description: this.formDescription.value,
+                amount: this.formAmount.value,
+                date: this.formDate.value
+        }
+
+    },
+
+    validateFields() {
+
+        const { description, amount, date } = this.getValues()
+
+        if (description.trim() === "" || 
+            amount.trim() === "" || 
+            date.trim() === "") 
+        {
+                throw new Error('Todos os campos precisam ser preenchidos!')
+        }
+
+    },
+
+    formatValues() {
+        let { description, amount, date} = this.getValues()
+
+        amount = Utils.formatAmount(amount)
+
+        date = Utils.formatDate(date)
+
+        return {
+            description,
+            amount,
+            date
+        }
+    },
+
+    clearForm() {
+        this.formDescription.value = ""
+        this.formAmount.value = ""
+        this.formDate.value = ""
+    },
+
+    submit(event) {
+        event.preventDefault()
+
+        try {
+            //verificar se todas as infoemaçẽos foram preenchidas
+            //this.validateFields()
+            
+            //formatar os dados pra salvamento
+            const transaction = this.formatValues()
+            
+            //salvar os dados
+            Transaction.add(transaction)
+            
+            //apagar os dados do formulário
+            this.clearForm()
+            
+            //fechar o modal
+            Modal.close()
+
+        } catch (error) {
+           alert(error) 
+        }
+
+    }
+}
+
 const App = {
     init() {
-        Transaction.all.forEach(transaction => {
-            DOM.addTransaction(transaction)
+        Transaction.all.forEach((transaction, index) => {
+            DOM.addTransaction(transaction, index)
         })
 
         DOM.updateBalance()
@@ -135,14 +226,14 @@ const DOM =  {
 
     addTransaction(transaction, index) {
         const tr = document.createElement('tr')
-        tr.innerHTML = DOM.innerHTMLTransaction(transaction)
-
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction, index)
+        tr.dataset.index = index
         DOM.transactionsContainer.appendChild(tr)
     },
 
     
 
-    innerHTMLTransaction(transaction) {
+    innerHTMLTransaction(transaction, index) {
 
         const cssClass = transaction.amount > 0 ? 'income' : 'expense'
     
@@ -152,7 +243,7 @@ const DOM =  {
                 <td class="date">${transaction.date}</td>
                 <td>
                     <a href="#">
-                        <img src="./assets//minus.svg" alt="Remover Transação" />
+                        <img onclick="Transaction.remove(${index})" src="./assets//minus.svg" alt="Remover Transação" />
                     </a>
                 </td>
         `
@@ -199,24 +290,8 @@ const DOM =  {
 
 App.init()
 
-Transaction.add(
-     {
-         id: 5,
-         description: 'Equipamentos',
-         amount: -700000,
-         date: '05/01/2021',
-     }
-)
 
-Transaction.add(
-    {
-         id: 6,
-         description: 'Consultoria',
-         amount: 400000,
-         date: '07/01/2021',
-     }
-)
 
-App.reload()
+
 
     

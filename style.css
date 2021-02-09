@@ -266,6 +266,8 @@ table tbody tr td:last-child {
 
     opacity: 0;
     visibility: hidden;
+
+    z-index: 999;
 }
 
 .modal-overlay.active {
@@ -277,9 +279,11 @@ table tbody tr td:last-child {
     background: #f0f2f5;
     padding: 2.4rem;
     position: relative;
-
+    
     border-radius: 5px;
     box-shadow: 1px solid rgba(0,0,0,0.3);
+
+    z-index: 1;
 }
 
 .active {

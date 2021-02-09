@@ -16,38 +16,19 @@ const Modal = {
     }
 }
 
+const Storage = {
+    get() {
+        return JSON.parse(localStorage.getItem("dev.finances:transaction")) || []
+    }, 
+
+    set(transaction) {
+        localStorage.setItem("dev.finances:transaction", JSON.stringify(transaction))
+    }
+}
+
 const Transaction = {
 
-    all: [
-        {
-            id: 1,
-            description: 'Luz',
-            amount: -30000,
-            date: '05/01/2021',
-        },
-    
-        {
-            id: 2,
-            description: 'Desenvolvimento de Site',
-            amount: 500000,
-            date: '05/01/2021',
-        },
-    
-        {
-            id: 3,
-            description: 'Aluguel',
-            amount: -110000,
-            date: '05/01/2021',
-        },
-    
-        {
-            id: 4,
-            description: 'Criação App',
-            amount: -20000,
-            date: '05/01/2021',
-        },
-    
-    ],
+    all: Storage.get(),
 
     add(transaction){
         this.all.push(transaction)
@@ -118,7 +99,10 @@ const Utils = {
     },
 
     formatCurrency(value) {
-        const signal = Number(value) < 0 ? '-' : '+'
+        let signal = Number(value) < 0 ? '-' : '+' 
+        if (Number(value) === 0) {
+            signal = ''
+        }
         value = String(value).replace(/\D/g, "")
         value = Number(value) / 100
         value = value.toLocaleString('pt-BR', {
@@ -212,6 +196,8 @@ const App = {
         })
 
         DOM.updateBalance()
+
+        Storage.set(Transaction.all)
     },
 
     reload() {
